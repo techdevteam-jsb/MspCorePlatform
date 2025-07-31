@@ -1,0 +1,33 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# Mac OS
+.DS_Store
+
+# Build results
+*.dll
+*.exe
+*.app
+*.log
+
+# Rider IDE
+.idea/
+
+# User-specific files
+*.swp
+*.userprefs
+
+# Entity Framework
+Migrations/
+
+# Secrets
+secrets.json
+appsettings.Development.json
