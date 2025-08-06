@@ -473,6 +473,52 @@ namespace MspCore.Infrastructure.Migrations
                     b.ToTable("CmdbConfigurationItems", "public");
                 });
 
+            modelBuilder.Entity("MspCore.Domain.Entities.Applications.ApplicationServer", b =>
+                {
+                    b.HasBaseType("MspCore.Domain.Entities.Cmdb.CmdbConfigurationItem");
+
+                    b.Property<Guid>("ApplicationItemId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ApplicationServerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("CommissionedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DecommissionedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Hostname")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("IPAddress")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("OS")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ServerType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasIndex("ApplicationItemId");
+
+                    b.ToTable("ApplicationServers", "public");
+                });
+
             modelBuilder.Entity("MspCore.Domain.Entities.Cmdb.CmdbApplicationItem", b =>
                 {
                     b.HasBaseType("MspCore.Domain.Entities.Cmdb.CmdbConfigurationItem");
@@ -625,6 +671,33 @@ namespace MspCore.Infrastructure.Migrations
                     b.ToTable("CmdbCompanyItems", "public");
                 });
 
+            modelBuilder.Entity("MspCore.Domain.Entities.Cmdb.CmdbHardwareItem", b =>
+                {
+                    b.HasBaseType("MspCore.Domain.Entities.Cmdb.CmdbConfigurationItem");
+
+                    b.Property<string>("HardwareType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Manufacturer")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("SerialNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.ToTable("CmdbHardwareItem", "public");
+                });
+
             modelBuilder.Entity("MspCore.Domain.Entities.Cmdb.CmdbProductItem", b =>
                 {
                     b.HasBaseType("MspCore.Domain.Entities.Cmdb.CmdbConfigurationItem");
@@ -676,6 +749,38 @@ namespace MspCore.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("CmdbProductItems", "public");
+                });
+
+            modelBuilder.Entity("MspCore.Domain.Entities.Cmdb.CmdbSoftwareItem", b =>
+                {
+                    b.HasBaseType("MspCore.Domain.Entities.Cmdb.CmdbConfigurationItem");
+
+                    b.Property<string>("LicenseKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("LicenseType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("SoftwareName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Vendor")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.ToTable("CmdbSoftwareItem", "public");
                 });
 
             modelBuilder.Entity("MspCore.Domain.Entities.Applications.Application", b =>
@@ -795,6 +900,23 @@ namespace MspCore.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MspCore.Domain.Entities.Applications.ApplicationServer", b =>
+                {
+                    b.HasOne("MspCore.Domain.Entities.Cmdb.CmdbApplicationItem", "ApplicationItem")
+                        .WithMany("Servers")
+                        .HasForeignKey("ApplicationItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MspCore.Domain.Entities.Cmdb.CmdbConfigurationItem", null)
+                        .WithOne()
+                        .HasForeignKey("MspCore.Domain.Entities.Applications.ApplicationServer", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationItem");
+                });
+
             modelBuilder.Entity("MspCore.Domain.Entities.Cmdb.CmdbApplicationItem", b =>
                 {
                     b.HasOne("MspCore.Domain.Entities.Cmdb.CmdbClientItem", "Client")
@@ -843,6 +965,15 @@ namespace MspCore.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MspCore.Domain.Entities.Cmdb.CmdbHardwareItem", b =>
+                {
+                    b.HasOne("MspCore.Domain.Entities.Cmdb.CmdbConfigurationItem", null)
+                        .WithOne()
+                        .HasForeignKey("MspCore.Domain.Entities.Cmdb.CmdbHardwareItem", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MspCore.Domain.Entities.Cmdb.CmdbProductItem", b =>
                 {
                     b.HasOne("MspCore.Domain.Entities.Cmdb.CmdbClientItem", "Client")
@@ -870,6 +1001,15 @@ namespace MspCore.Infrastructure.Migrations
                     b.Navigation("Client");
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("MspCore.Domain.Entities.Cmdb.CmdbSoftwareItem", b =>
+                {
+                    b.HasOne("MspCore.Domain.Entities.Cmdb.CmdbConfigurationItem", null)
+                        .WithOne()
+                        .HasForeignKey("MspCore.Domain.Entities.Cmdb.CmdbSoftwareItem", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MspCore.Domain.Entities.Applications.Application", b =>
@@ -902,6 +1042,11 @@ namespace MspCore.Infrastructure.Migrations
             modelBuilder.Entity("MspCore.Domain.Entities.Products.ProductCategory", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("MspCore.Domain.Entities.Cmdb.CmdbApplicationItem", b =>
+                {
+                    b.Navigation("Servers");
                 });
 
             modelBuilder.Entity("MspCore.Domain.Entities.Cmdb.CmdbClientItem", b =>

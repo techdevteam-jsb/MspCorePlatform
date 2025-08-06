@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MspCore.Domain.Entities.Applications;
 
 namespace MspCore.Domain.Entities.Cmdb
 {
@@ -51,5 +52,6 @@ namespace MspCore.Domain.Entities.Cmdb
 
         [ForeignKey("ProductItemId")]
         public CmdbProductItem? Product { get; set; }
+        public ICollection<ApplicationServer> Servers { get; set; } = new List<ApplicationServer>();
     }
 }

@@ -52,6 +52,9 @@ namespace MspCore.Infrastructure.Data
             modelBuilder.Entity<CmdbClientItem>().ToTable("CmdbClientItems");
             modelBuilder.Entity<CmdbCompanyItem>().ToTable("CmdbCompanyItems");
             modelBuilder.Entity<CmdbProductItem>().ToTable("CmdbProductItems");
+            modelBuilder.Entity<ApplicationServer>().ToTable("ApplicationServers");
+            modelBuilder.Entity<CmdbHardwareItem>().HasBaseType<CmdbConfigurationItem>();
+            modelBuilder.Entity<CmdbSoftwareItem>().HasBaseType<CmdbConfigurationItem>();
 
 
             // CmdbApplicationItem relationships
@@ -72,6 +75,14 @@ namespace MspCore.Infrastructure.Data
                 .WithMany(p => p.Applications)
                 .HasForeignKey(a => a.ProductItemId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+
+            modelBuilder.Entity<ApplicationServer>()
+                .HasOne(a => a.ApplicationItem)
+                .WithMany(app => app.Servers)
+                .HasForeignKey(a => a.ApplicationItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+
 
             // PortalUser → ClientAccount
             modelBuilder.Entity<PortalUser>()
